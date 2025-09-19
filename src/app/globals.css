@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -16,6 +17,7 @@
   --color-brand-dark: #09141a;
   --color-brand-gradient-light: #62cdcb;
   --color-brand-gradient-dark: #4599db;
+  --color-brand-golden: gold;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,7 +30,8 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* font-family: Arial, Helvetica, sans-serif;*/
+  font-family: "Inter", sans-serif;
 }
 
 @layer utilities {
@@ -43,7 +46,20 @@ body {
     );
   }
 
+  .bg-linear-background-light {
+    background-image: linear-gradient(
+      135deg,
+      var(--color-brand-gradient-light) 0%,
+      var(--color-brand-gradient-light) 20%,
+      var(--color-brand-gradient-dark) 100%
+    );
+  }
+
   .stack-col {
     @apply flex flex-col;
+  }
+
+  .icon-normal-size {
+    @apply w-8 h-8;
   }
 }
