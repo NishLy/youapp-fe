@@ -42,4 +42,8 @@ body {
       var(--color-brand-dark)
     );
   }
+
+  .stack-col {
+    @apply flex flex-col;
+  }
 }
