@@ -1,6 +1,7 @@
 import { GenericErrorResponse } from "@/common/types/response";
 import apiServer from "@/services/api.server";
-import { handleApiError } from "@/utils/errors/api";
+import { handleApiServerError } from "@/utils/errors/api";
+import { forwardRequestHeaders } from "@/utils/request/headers";
 import { AxiosError } from "axios";
 import { NextResponse } from "next/server";
 
@@ -9,13 +10,11 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const res = await apiServer.post("/register", body, {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: forwardRequestHeaders(req),
     });
 
     return NextResponse.json(res.data, { status: res.status });
   } catch (error: unknown) {
-    handleApiError(error as AxiosError<GenericErrorResponse>);
+    handleApiServerError(error as AxiosError<GenericErrorResponse>);
   }
 }
