@@ -3,26 +3,16 @@ import apiServer from "@/services/api.server";
 import { handleApiServerError } from "@/utils/errors/api";
 import { forwardRequestHeaders } from "@/utils/request/headers";
 import { AxiosError } from "axios";
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function GET(req: Request) {
   try {
-    const body = await req.json();
-
-    const res = await apiServer.post("/login", body, {
+    const res = await apiServer.get("/getProfile", {
       headers: forwardRequestHeaders(req),
-    });
-
-    (await cookies()).set("x-access-token", res.data.access_token, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 60 * 60, // 1 jam
-      path: "/",
     });
 
     return NextResponse.json(res.data, { status: res.status });
   } catch (error: unknown) {
-    handleApiServerError(error as AxiosError<GenericErrorResponse>);
+    return handleApiServerError(error as AxiosError<GenericErrorResponse>);
   }
 }

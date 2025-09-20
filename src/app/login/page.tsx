@@ -62,7 +62,7 @@ function Page() {
                   const res = await mutationLogin.mutateAsync(payload);
                   toast.success(res.message);
                   setToken(res.access_token);
-                  router.replace("/about");
+                  router.replace("/profile");
                 } catch (err) {
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   const axiosError = err as AxiosError<any>;

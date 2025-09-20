@@ -18,11 +18,12 @@
   --color-brand-gradient-light: #62cdcb;
   --color-brand-gradient-dark: #4599db;
   --color-brand-golden: gold;
+  --color-brand-card: #0e191f;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #09141a;
     --foreground: #ededed;
   }
 }
