@@ -1,15 +1,14 @@
 import classNames from "classnames";
-import React, { ReactNode } from "react";
+import React, { ButtonHTMLAttributes, ReactNode } from "react";
 
 type Props = {
-  onClick?: () => void;
   children?: ReactNode;
-  className?: string;
-};
+} & ButtonHTMLAttributes<HTMLButtonElement>;
 
 function Button(props: Props) {
   return (
     <button
+      {...props}
       className={classNames(
         "bg-linear-background-light rounded-md px-4 py-4 text-lg font-bold",
         props.className

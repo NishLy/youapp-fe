@@ -1,41 +1,69 @@
 "use client";
 
 import classNames from "classnames";
-import React from "react";
+import { useField } from "formik";
+import React, { useState } from "react";
+import { IoIosEyeOff, IoIosEye } from "react-icons/io";
 
 type InputProps = {
-  value?: string;
+  name: string;
+  label?: string;
   placeholder?: string;
   leadingIcon?: React.ReactNode;
   onClickLeadingIcon?: () => void;
-  onChange?: (value: string) => void;
   className?: string;
+  type?: "text" | "password";
 };
 
 function Input({
-  value,
+  name,
+  label,
   placeholder = "Type here...",
   leadingIcon,
-  onChange,
+  onClickLeadingIcon,
   className,
+  type = "text",
 }: InputProps) {
+  const [field, meta] = useField(name);
+  const [showPassword, setShowPassword] = useState(false);
+  const isPassword = type === "password";
+
   return (
-    <div
-      className={classNames(
-        "flex items-center rounded-md border-0  bg-white/10 outline-0 p-4",
-        className
-      )}
-    >
-      <input
-        type="text"
-        value={value}
-        placeholder={placeholder}
-        onChange={(e) => onChange?.(e.target.value)}
-        className="w-full bg-transparent text-lg outline-none placeholder:text-gray-400"
-      />
-      {leadingIcon && (
-        <span className="mr-2 text-gray-400 flex-shrink-0">{leadingIcon}</span>
-      )}
+    <div>
+      {label && <label className="block mb-1 font-medium">{label}</label>}
+      <div
+        className={classNames(
+          "flex items-center rounded-lg border-0 bg-white/10 outline-0 p-4",
+          className
+        )}
+      >
+        <input
+          {...field} // handles name, value, onChange, onBlur
+          type={isPassword && !showPassword ? "password" : "text"}
+          placeholder={placeholder}
+          className="w-full bg-transparent text-lg outline-none placeholder:text-gray-400"
+        />
+        {leadingIcon && (
+          <span
+            onClick={onClickLeadingIcon}
+            className="mr-2 text-gray-400 flex-shrink-0 cursor-pointer"
+          >
+            {leadingIcon}
+          </span>
+        )}
+        {isPassword && (
+          <span
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="ml-2 text-gray-400 cursor-pointer"
+          >
+            {showPassword ? <IoIosEyeOff size={20} /> : <IoIosEye size={20} />}
+          </span>
+        )}
+      </div>
+
+      {meta.touched && meta.error ? (
+        <p className="text-red-500 text-sm mt-1">{meta.error}</p>
+      ) : null}
     </div>
   );
 }
