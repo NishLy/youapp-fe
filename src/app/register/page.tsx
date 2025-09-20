@@ -9,10 +9,14 @@ import MobileLayout from "@/components/MobileLayout";
 import { Form, Formik } from "formik";
 import Link from "next/link";
 import React from "react";
-import { IoIosEyeOff } from "react-icons/io";
 import * as Yup from "yup";
+import { RegisterDTO } from "./types/register";
+import { useMutation } from "@tanstack/react-query";
+import { mutateRegister } from "./services/query";
+import { AxiosError } from "axios";
+import toast from "react-hot-toast";
 
-const validationScema = Yup.object({
+const validationScema = Yup.object<RegisterDTO>({
   username: Yup.string()
     .min(3, "Must be at least 3 characters")
     .required("Username is required"),
@@ -23,12 +27,17 @@ const validationScema = Yup.object({
     .required("Confirm Password is required"),
 });
 
-function page() {
+function Page() {
+  const mutationRegister = useMutation({
+    mutationKey: ["register"],
+    mutationFn: mutateRegister,
+  });
+
   return (
     <LayoutMobile>
       <GradientBackground>
         <MobileLayout className="flex flex-col py-8 px-4">
-          <Back></Back>
+          <Back />
           <div className="stack-col h-full justify-center">
             <Formik
               initialValues={{
@@ -38,11 +47,28 @@ function page() {
                 confirmPassword: "",
               }}
               validationSchema={validationScema}
-              onSubmit={(values) => {
-                console.log("✅ Submitted:", values);
+              onSubmit={async (values, { setSubmitting, setErrors }) => {
+                try {
+                  const res = await mutationRegister.mutateAsync(values);
+                  toast.success(res.message);
+                } catch (err) {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  const axiosError = err as AxiosError<any>;
+
+                  if (
+                    axiosError.response?.data &&
+                    typeof axiosError.response.data === "object"
+                  ) {
+                    setErrors(axiosError.response.data);
+                  } else {
+                    toast.error("Something went wrong");
+                  }
+                } finally {
+                  setSubmitting(false);
+                }
               }}
             >
-              {({ isValid, dirty }) => (
+              {({ isValid, dirty, isSubmitting }) => (
                 <Form className="stack-col gap-y-4">
                   <h1 className="text-3xl px-4 mb-2">Register</h1>
                   <Input name="email" placeholder="Enter Email" />
@@ -57,16 +83,18 @@ function page() {
                     placeholder="Enter Confirmation Password"
                     type="password"
                   />
+
                   <Button
                     className="mt-4"
                     type="submit"
-                    disabled={!(isValid && dirty)}
+                    disabled={!(isValid && dirty) || isSubmitting}
                   >
-                    Register
+                    {isSubmitting ? "Registering..." : "Register"}
                   </Button>
                 </Form>
               )}
             </Formik>
+
             <p className="text-center mt-10">
               Have an account{" "}
               <Link className="text-brand-golden underline" href="/login">
@@ -80,4 +108,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

@@ -11,7 +11,8 @@ function Button(props: Props) {
       {...props}
       className={classNames(
         "bg-linear-background-light rounded-md px-4 py-4 text-lg font-bold",
-        props.className
+        props.className,
+        props.disabled ? "brightness-50" : null
       )}
     >
       {props.children}
