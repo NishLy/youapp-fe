@@ -12,7 +12,10 @@ type InputProps = {
   leadingIcon?: React.ReactNode;
   onClickLeadingIcon?: () => void;
   className?: string;
-  type?: "text" | "password";
+  inputClassName?: string;
+  type?: "text" | "password" | "date" | "number";
+  disabled?: boolean;
+  readOnly?: boolean;
 };
 
 function Input({
@@ -23,6 +26,9 @@ function Input({
   onClickLeadingIcon,
   className,
   type = "text",
+  inputClassName,
+  disabled,
+  readOnly,
 }: InputProps) {
   const [field, meta] = useField(name);
   const [showPassword, setShowPassword] = useState(false);
@@ -39,9 +45,14 @@ function Input({
       >
         <input
           {...field} // handles name, value, onChange, onBlur
-          type={isPassword && !showPassword ? "password" : "text"}
+          disabled={disabled}
+          readOnly={readOnly}
+          type={isPassword && !showPassword ? "password" : type}
           placeholder={placeholder}
-          className="w-full bg-transparent text-lg outline-none placeholder:text-gray-400"
+          className={classNames(
+            "w-full bg-transparent text-lg outline-none placeholder:text-gray-400 ",
+            inputClassName
+          )}
         />
         {leadingIcon && (
           <span
