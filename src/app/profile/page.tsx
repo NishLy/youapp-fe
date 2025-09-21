@@ -15,13 +15,14 @@ import Input from "@/components/input";
 import Select from "@/components/select";
 import { Formik, Form } from "formik";
 import { IoIosAdd } from "react-icons/io";
-import { string } from "yup";
 import Image from "next/image";
 import getAge, { formatBirthdayDate } from "@/utils/birthday";
+import { useRouter } from "next/navigation";
+import { getHoroscopeIcon, Horoscope } from "./utils/horoscope";
+import { getZodiacIcon, Zodiac } from "./utils/zodiac";
 
-type Props = {};
-
-function Page({}: Props) {
+function Page() {
+  const router = useRouter();
   const [profileState, setProfileState] = useAtom(ProfileAtom);
 
   const queryData = useQuery({
@@ -65,8 +66,17 @@ function Page({}: Props) {
     <LayoutMobile>
       <div className="bg-background h-full w-full">
         <MobileLayout className="flex flex-col py-8 px-4 h-full">
-          <Back />
-          <div className="stack-col h-full justify-center gap-y-4 mt-4 ">
+          <Back
+            title={
+              profileState.username && (
+                <span className=" font-bold text-white">
+                  @{profileState.username}
+                </span>
+              )
+            }
+            rightIcon={<div className="w-16 h-2"></div>}
+          />
+          <div className="stack-col h-full justify-center gap-y-4 mt-6 ">
             {queryData.isLoading && <span>Loading...</span>}
             {queryData.data && !queryData.isLoading && (
               <>
@@ -93,13 +103,20 @@ function Page({}: Props) {
 
                     {profileState.horoscope && profileState.zodiac && (
                       <div className="flex gap-4">
-                        <div className="flex gap-2 bg-background font-bold px-3 py-1 rounded-2xl">
-                          <div></div>
-                          <span>{profileState.zodiac}</span>
-                        </div>
-                        <div className="flex gap-2 bg-background font-bold px-3 py-1 rounded-2xl">
-                          <div></div>
+                        <div className="flex gap-2 bg-background items-center font-bold px-3 py-1 rounded-2xl">
+                          <div>
+                            {getHoroscopeIcon(
+                              profileState.horoscope?.toLocaleLowerCase() as Horoscope,
+                              { size: 16 }
+                            )}
+                          </div>
                           <span>{profileState.horoscope}</span>
+                        </div>
+                        <div className="flex gap-2 bg-background items-center font-bold px-3 py-1 rounded-2xl">
+                          <div>
+                            {getZodiacIcon(profileState.zodiac as Zodiac)}
+                          </div>
+                          <span>{profileState.zodiac}</span>
                         </div>
                       </div>
                     )}
@@ -316,10 +333,26 @@ better"
                 </Formik>
                 <Card
                   title="Interests"
-                  actionButton={<FaEdit />}
+                  actionButton={
+                    <FaEdit onClick={() => router.push("/profile/interests")} />
+                  }
                   className="bg-brand-card"
                   placeholderText="Add in your interest to find a better match"
-                />
+                >
+                  {profileState.interests &&
+                    profileState.interests.length >= 0 && (
+                      <div className="flex flex-wrap w-full box-border gap-2">
+                        {profileState.interests.map((e, i) => (
+                          <div
+                            key={i}
+                            className="flex gap-2 w-fit items-center bg-white/10 rounded-2xl px-4 py-1"
+                          >
+                            <span>{e}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                </Card>
               </>
             )}
           </div>

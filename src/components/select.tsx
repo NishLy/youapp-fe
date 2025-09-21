@@ -35,8 +35,6 @@ function Select({
 }: SelectProps) {
   const [field, meta, helpers] = useField(name);
 
-  console.log(field);
-
   return (
     <div>
       {label && <label className="block mb-1 font-medium">{label}</label>}

@@ -8,7 +8,7 @@ interface IProfile {
   weight?: number;
   username: string;
   email: string;
-  interest?: string[];
+  interests?: string[];
 }
 
 export default IProfile;
