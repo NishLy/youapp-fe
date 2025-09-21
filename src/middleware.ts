@@ -3,25 +3,27 @@ import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("x-access-token")?.value;
+  const { pathname } = req.nextUrl;
 
-  if (!token) {
+  if (!token && pathname.startsWith("/profile")) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // Clone headers and set the token
+  if (token && pathname.startsWith("/login")) {
+    return NextResponse.redirect(new URL("/profile", req.url));
+  }
+
+  // Clone headers and attach token if available
   const requestHeaders = new Headers(req.headers);
-  requestHeaders.set("x-access-token", token);
+  if (token) {
+    requestHeaders.set("x-access-token", token);
+  }
 
-  // Forward request with new headers
-  const response = NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
+  return NextResponse.next({
+    request: { headers: requestHeaders },
   });
-
-  return response;
 }
 
 export const config = {
-  matcher: ["/profile/:path*", "/api/profile/:path*"],
+  matcher: ["/login", "/profile/:path*", "/api/profile/:path*"],
 };

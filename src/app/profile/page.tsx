@@ -76,8 +76,12 @@ function Page() {
             }
             rightIcon={<div className="w-16 h-2"></div>}
           />
-          <div className="stack-col justify-center gap-y-4 mt-6 ">
-            {queryData.isLoading && <span>Loading...</span>}
+          <div className="stack-col justify-center gap-y-4 mt-6 h-full">
+            {queryData.isLoading && (
+              <div className="w-full h-screen flex justify-center items-center">
+                Loading...
+              </div>
+            )}
             {queryData.data && !queryData.isLoading && (
               <>
                 <div className="rounded-lg min-h-56 bg-brand-card-light relative stack-col justify-end overflow-hidden mb-2">
@@ -169,7 +173,12 @@ better"
                                   className="absolute h-full object-cover overflow-hidden"
                                 />
                               )}
-                              {!imgData && <IoIosAdd className="w-8 h-8" />}
+                              {!imgData && (
+                                <IoIosAdd
+                                  className="w-8 h-8"
+                                  onClick={() => fileRef.current?.click()}
+                                />
+                              )}
                             </div>
                             <button
                               type="button"
