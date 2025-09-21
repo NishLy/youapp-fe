@@ -13,7 +13,7 @@ function Card(props: Props) {
     <div
       {...props}
       className={classNames(
-        "rounded-lg p-4 shadow-md min-h-36 box-border h-fit stack-col",
+        "rounded-lg p-4 shadow-md min-h-36 box-border h-full flex flex-col",
         props.className
       )}
     >
@@ -21,14 +21,13 @@ function Card(props: Props) {
         <h2>{props.title}</h2>
         {props.actionButton}
       </div>
-      <div className="flex flex-col items-center h-full  mt-4 ">
-        {props.children ? (
-          props.children
-        ) : (
-          <div className="stack-col justify-center items-center h-full">
-            {props.placeholderText}
-          </div>
+      <div
+        className={classNames(
+          "flex flex-col flex-1 items-center h-full  mt-4 ",
+          !props.children ? "justify-center" : ""
         )}
+      >
+        {props.children ? props.children : props.placeholderText}
       </div>
     </div>
   );

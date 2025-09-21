@@ -17,7 +17,7 @@ import { Formik, Form } from "formik";
 import { IoIosAdd } from "react-icons/io";
 import { string } from "yup";
 import Image from "next/image";
-import getAge from "@/utils/birthday";
+import getAge, { formatBirthdayDate } from "@/utils/birthday";
 
 type Props = {};
 
@@ -43,6 +43,7 @@ function Page({}: Props) {
     onSuccess: (data) => {
       toast.success(data.message);
       queryData.refetch();
+      setIsEditingAbout(false);
     },
     onError: (data) => {
       toast.success(data.message);
@@ -79,7 +80,7 @@ function Page({}: Props) {
                       className="absolute h-full object-cover overflow-hidden -z-0"
                     />
                   )}
-                  <div className="stack-col p-4 relative z-10">
+                  <div className="stack-col p-4 relative z-10 gap-1">
                     <h1 className="text-lg font-bold text-white">
                       @{profileState.username},{" "}
                       {profileState.birthday && getAge(profileState.birthday)}
@@ -88,6 +89,19 @@ function Page({}: Props) {
                       <span className="capitalize text-sm">
                         {profileState.gender}
                       </span>
+                    )}
+
+                    {profileState.horoscope && profileState.zodiac && (
+                      <div className="flex gap-4">
+                        <div className="flex gap-2 bg-background font-bold px-3 py-1 rounded-2xl">
+                          <div></div>
+                          <span>{profileState.zodiac}</span>
+                        </div>
+                        <div className="flex gap-2 bg-background font-bold px-3 py-1 rounded-2xl">
+                          <div></div>
+                          <span>{profileState.horoscope}</span>
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>{" "}
@@ -241,6 +255,59 @@ better"
                               inputClassName="text-right text-sm"
                               type="number"
                             />
+                          </div>
+                        </div>
+                      )}
+                      {!isEditingAbout && (
+                        <div className="stack-col gap-y-2 w-full">
+                          <div className="flex items-center gap-1 w-full">
+                            <span className="text-nowrap text-white/40 text-sm">
+                              Birthday :
+                            </span>
+                            <span className="text-sm">
+                              {" "}
+                              {profileState.birthday && (
+                                <>
+                                  {formatBirthdayDate(profileState.birthday)}{" "}
+                                  (Age {getAge(profileState.birthday)})
+                                </>
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1 w-full">
+                            <span className="text-nowrap text-white/40 text-sm">
+                              Horoscope :
+                            </span>
+                            <span className="text-sm">
+                              {" "}
+                              {profileState.horoscope}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1 w-full">
+                            <span className="text-nowrap text-white/40 text-sm">
+                              Zodiac :
+                            </span>
+                            <span className="text-sm">
+                              {" "}
+                              {profileState.zodiac}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1 w-full">
+                            <span className="text-nowrap text-white/40 text-sm">
+                              Weight :
+                            </span>
+                            <span className="text-sm">
+                              {" "}
+                              {profileState.weight} kg
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1 w-full">
+                            <span className="text-nowrap text-white/40 text-sm">
+                              Height :
+                            </span>
+                            <span className="text-sm">
+                              {profileState.height} cm
+                            </span>
                           </div>
                         </div>
                       )}
