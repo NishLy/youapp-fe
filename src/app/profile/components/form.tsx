@@ -35,7 +35,7 @@ function FormUpdate() {
             Display Name :
           </span>
           <Input
-            name="displayname"
+            name="name"
             className="border-2 border-white/40 px-2 py-2 text-sm w-56 bg-white/10"
             placeholder="Enter Name"
             inputClassName="text-right text-sm"

@@ -5,31 +5,34 @@ import Card from "@/components/card";
 import LayoutMobile from "@/components/layout-mobile";
 import MobileLayout from "@/components/MobileLayout";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { mutateUpdateProfile, queryProfile } from "./services/query";
-import FormUpdate from "./components/form";
 import { useAtom } from "jotai";
 import ProfileAtom from "./state/profile";
 import toast from "react-hot-toast";
 import Input from "@/components/input";
 import Select from "@/components/select";
 import { Formik, Form } from "formik";
+import { IoIosAdd } from "react-icons/io";
+import { string } from "yup";
+import Image from "next/image";
+import getAge from "@/utils/birthday";
 
 type Props = {};
 
 function Page({}: Props) {
-  const [profileState] = useAtom(ProfileAtom);
+  const [profileState, setProfileState] = useAtom(ProfileAtom);
 
   const queryData = useQuery({
     queryKey: ["profile"],
     queryFn: queryProfile,
   });
 
-  const [_, setProfileState] = useAtom(ProfileAtom);
-
   useEffect(() => {
-    if (queryData.data?.data) setProfileState(queryData.data.data.data);
+    if (queryData.data?.data)
+      setProfileState({ ...profileState, ...queryData.data.data.data });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryData.data, setProfileState]);
 
   const [isEditingAbout, setIsEditingAbout] = useState(false);
@@ -46,22 +49,53 @@ function Page({}: Props) {
     },
   });
 
-  console.log(profileState);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [imgData, setImgData] = useState<null | string>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setImgData(url);
+    }
+  };
 
   return (
     <LayoutMobile>
       <div className="bg-background h-full w-full">
         <MobileLayout className="flex flex-col py-8 px-4 h-full">
           <Back />
-          <div className="stack-col h-full justify-center gap-y-4 ">
+          <div className="stack-col h-full justify-center gap-y-4 mt-4 ">
             {queryData.isLoading && <span>Loading...</span>}
             {queryData.data && !queryData.isLoading && (
               <>
-                {" "}
+                <div className="rounded-lg min-h-56 bg-brand-card-light relative stack-col justify-end overflow-hidden mb-2">
+                  {imgData && (
+                    <Image
+                      src={imgData}
+                      alt=""
+                      width={1000}
+                      height={1000}
+                      className="absolute h-full object-cover overflow-hidden -z-0"
+                    />
+                  )}
+                  <div className="stack-col p-4 relative z-10">
+                    <h1 className="text-lg font-bold text-white">
+                      @{profileState.username},{" "}
+                      {profileState.birthday && getAge(profileState.birthday)}
+                    </h1>
+                    {profileState.gender && (
+                      <span className="capitalize text-sm">
+                        {profileState.gender}
+                      </span>
+                    )}
+                  </div>
+                </div>{" "}
                 <Formik
                   initialValues={profileState}
                   onSubmit={(values) => {
                     mutateUpdate.mutateAsync(values);
+                    setProfileState({ ...profileState, gender: values.gender });
                   }}
                   enableReinitialize
                 >
@@ -86,6 +120,34 @@ better"
                     >
                       {isEditingAbout && (
                         <div className="stack-col gap-y-3">
+                          <div className="flex gap-4 items-center">
+                            <div className="h-16 w-16 bg-brand-card-light rounded-xl  flex justify-center items-center overflow-hidden relative">
+                              <input
+                                ref={fileRef}
+                                type="file"
+                                accept="image/*" // restrict to images only
+                                hidden
+                                onChange={handleFileChange}
+                              />
+                              {imgData && (
+                                <Image
+                                  src={imgData}
+                                  alt=""
+                                  width={100}
+                                  height={100}
+                                  className="absolute h-full object-cover overflow-hidden"
+                                />
+                              )}
+                              {!imgData && <IoIosAdd className="w-8 h-8" />}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => fileRef.current?.click()}
+                              className="text-nowrap text-white/40 text-sm"
+                            >
+                              Add Image
+                            </button>
+                          </div>
                           <div className="flex justify-between gap-8 items-center">
                             <span className="text-nowrap text-white/40 text-sm">
                               Display Name :
@@ -102,7 +164,7 @@ better"
                               Gender :
                             </span>
                             <Select
-                              name="birthday"
+                              name="gender"
                               className="border-2 border-white/40 px-2 py-2 text-sm w-56 bg-white/10"
                               placeholder="Select gender"
                               selectClassName="text-sm text-right "

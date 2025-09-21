@@ -5,6 +5,7 @@ const ProfileAtom = atom<IProfile>({
   displayName: "",
   email: "",
   username: "",
+  gender: "",
 });
 
 export default ProfileAtom;

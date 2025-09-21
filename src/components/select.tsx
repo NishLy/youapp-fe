@@ -32,9 +32,10 @@ function Select({
   className,
   selectClassName,
   disabled,
-  readOnly,
 }: SelectProps) {
   const [field, meta, helpers] = useField(name);
+
+  console.log(field);
 
   return (
     <div>
@@ -49,7 +50,6 @@ function Select({
           {...field}
           disabled={disabled}
           value={field.value || ""}
-          onChange={(e) => helpers.setValue(e.target.value)}
           className={classNames(
             "w-full bg-transparent text-lg outline-none placeholder:text-gray-400 appearance-none",
             selectClassName
