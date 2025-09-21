@@ -8,9 +8,18 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  req.headers.set("x-access-token", token!);
+  // Clone headers and set the token
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-access-token", token);
 
-  return NextResponse.next();
+  // Forward request with new headers
+  const response = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
+
+  return response;
 }
 
 export const config = {
