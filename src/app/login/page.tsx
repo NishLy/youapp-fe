@@ -34,7 +34,7 @@ function Page() {
   return (
     <LayoutMobile>
       <GradientBackground>
-        <MobileLayout className="flex flex-col py-8 px-4">
+        <MobileLayout className="flex flex-col py-8 px-4 h-screen">
           <Back />
           <div className="stack-col h-full justify-center">
             <Formik
@@ -104,9 +104,9 @@ function Page() {
             </Formik>
 
             <p className="text-center mt-10">
-              Have an account{" "}
-              <Link className="text-brand-golden underline" href="/login">
-                Login Here
+              No Account?{" "}
+              <Link className="text-brand-golden underline" href="/register">
+                Register Here
               </Link>
             </p>
           </div>

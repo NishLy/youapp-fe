@@ -13,7 +13,7 @@ type InputProps = {
   onClickLeadingIcon?: () => void;
   className?: string;
   inputClassName?: string;
-  type?: "text" | "password" | "date" | "number";
+  type?: "text" | "password" | "date" | "number" | "email";
   disabled?: boolean;
   readOnly?: boolean;
 };
@@ -32,7 +32,9 @@ function Input({
 }: InputProps) {
   const [field, meta] = useField(name);
   const [showPassword, setShowPassword] = useState(false);
+
   const isPassword = type === "password";
+  const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 
   return (
     <div>
@@ -44,13 +46,13 @@ function Input({
         )}
       >
         <input
-          {...field} // handles name, value, onChange, onBlur
+          {...field}
           disabled={disabled}
           readOnly={readOnly}
-          type={isPassword && !showPassword ? "password" : type}
+          type={inputType}
           placeholder={placeholder}
           className={classNames(
-            "w-full bg-transparent text-lg outline-none placeholder:text-gray-400 ",
+            "w-full bg-transparent text-lg outline-none placeholder:text-gray-400",
             inputClassName
           )}
         />

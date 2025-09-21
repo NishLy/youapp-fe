@@ -15,6 +15,7 @@ import { useMutation } from "@tanstack/react-query";
 import { mutateRegister } from "./services/query";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const validationScema = Yup.object<RegisterDTO>({
   username: Yup.string()
@@ -33,10 +34,12 @@ function Page() {
     mutationFn: mutateRegister,
   });
 
+  const router = useRouter();
+
   return (
     <LayoutMobile>
       <GradientBackground>
-        <MobileLayout className="flex flex-col py-8 px-4">
+        <MobileLayout className="flex flex-col py-8 px-4 h-screen">
           <Back />
           <div className="stack-col h-full justify-center">
             <Formik
@@ -51,6 +54,7 @@ function Page() {
                 try {
                   const res = await mutationRegister.mutateAsync(values);
                   toast.success(res.message);
+                  router.replace("/login");
                 } catch (err) {
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   const axiosError = err as AxiosError<any>;

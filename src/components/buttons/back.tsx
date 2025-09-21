@@ -10,7 +10,7 @@ type Props = {
 function Back({ title, rightIcon: back }: Props) {
   const router = useRouter();
   return (
-    <div className="flex gap-2 items-center justify-between">
+    <div className="flex gap-2 items-center justify-between sticky">
       <div className="flex gap-1 items-center font-bold">
         {" "}
         <IoIosArrowBack className="w-6 h-6" onClick={() => router.back()} />

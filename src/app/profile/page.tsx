@@ -65,7 +65,7 @@ function Page() {
   return (
     <LayoutMobile>
       <div className="bg-background h-full w-full">
-        <MobileLayout className="flex flex-col py-8 px-4 h-full">
+        <MobileLayout className="flex flex-col py-8 px-4 min-h-screen">
           <Back
             title={
               profileState.username && (
@@ -76,7 +76,7 @@ function Page() {
             }
             rightIcon={<div className="w-16 h-2"></div>}
           />
-          <div className="stack-col h-full justify-center gap-y-4 mt-6 ">
+          <div className="stack-col justify-center gap-y-4 mt-6 ">
             {queryData.isLoading && <span>Loading...</span>}
             {queryData.data && !queryData.isLoading && (
               <>
