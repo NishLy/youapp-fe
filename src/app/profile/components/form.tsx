@@ -1,26 +1,41 @@
 import Input from "@/components/input";
 import { Form, Formik } from "formik";
 import React from "react";
-import IProfile from "../types/profile";
 import Select from "@/components/select";
+import { useAtom } from "jotai";
+import ProfileAtom from "../state/profile";
+import { useMutation } from "@tanstack/react-query";
+import { mutateUpdateProfile } from "../services/query";
+import toast from "react-hot-toast";
 
-type Props = {};
+function FormUpdate() {
+  const [profileState] = useAtom(ProfileAtom);
 
-const intialValues: IProfile = {
-  email: "",
-  username: "",
-};
+  const mutateUpdate = useMutation({
+    mutationKey: ["updateProfile"],
+    mutationFn: mutateUpdateProfile,
+    onSuccess: (data) => {
+      toast.success(data.message);
+    },
+    onError: (data) => {
+      toast.success(data.message);
+    },
+  });
 
-function FormUpdate({}: Props) {
   return (
-    <Formik initialValues={intialValues} onSubmit={(values) => {}}>
+    <Formik
+      initialValues={profileState}
+      onSubmit={(values) => {
+        mutateUpdate.mutateAsync(values);
+      }}
+    >
       <Form className="stack-col gap-y-3">
         <div className="flex justify-between gap-8 items-center">
           <span className="text-nowrap text-white/40 text-sm">
             Display Name :
           </span>
           <Input
-            name="displayName"
+            name="displayname"
             className="border-2 border-white/40 px-2 py-2 text-sm w-56 bg-white/10"
             placeholder="Enter Name"
             inputClassName="text-right text-sm"
@@ -29,7 +44,7 @@ function FormUpdate({}: Props) {
         <div className="flex justify-between gap-8 items-center">
           <span className="text-nowrap text-white/40 text-sm">Gender :</span>
           <Select
-            name="birthday"
+            name="gender"
             className="border-2 border-white/40 px-2 py-2 text-sm w-56 bg-white/10"
             placeholder="Select gender"
             selectClassName="text-sm text-right "

@@ -16,3 +16,16 @@ export async function GET(req: Request) {
     return handleApiServerError(error as AxiosError<GenericErrorResponse>);
   }
 }
+
+export async function PUT(req: Request) {
+  try {
+    const body = await req.json();
+    const res = await apiServer.put("/updateProfile", body, {
+      headers: forwardRequestHeaders(req),
+    });
+
+    return NextResponse.json(res.data, { status: res.status });
+  } catch (error: unknown) {
+    return handleApiServerError(error as AxiosError<GenericErrorResponse>);
+  }
+}
